@@ -1,5 +1,5 @@
 # Use Node.js LTS version as the base image
-FROM node:18
+FROM node:18-alpine
 
 # Set the maintainer information
 LABEL maintainer="greenmaryann57@gmail.com"
