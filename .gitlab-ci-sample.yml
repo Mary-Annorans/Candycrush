@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: # Added trigger for manual runs
+
 
 jobs:
   build-analyze-scan:
@@ -28,13 +28,12 @@ jobs:
       - name: Trivy file scan
         run: trivy fs . > trivyfs.txt
 
-      - name: Docker Build and Push
+      - name: Docker Build and push
         run: |
-            docker build -t candycrush .
-            docker tag candycrush maryann123456789/candycrush:latest
-            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login \
-            -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-            docker push maryann123456789/candycrush:latest
+          docker build -t candycrush .
+          docker tag candycrush maryann123456789/candycrush:latest
+          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+          docker push maryann123456789/candycrush:latest
         env:
           DOCKER_CLI_ACI: 1
 
@@ -69,6 +68,6 @@ jobs:
           channel: '#githubactions-eks'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  
 
-
-
+        
