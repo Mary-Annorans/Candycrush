@@ -52,7 +52,16 @@ jobs:
         run: trivy image maryann123456789/candycrush:latest > trivyimagedeploy.txt  
   
       - name: Deploy to container
-        run: docker run -d --name game -p 3000:3000 maryann123456789/candycrush:latest
+        run: |
+          docker stop game || true
+          docker rm game || true
+          docker run -d --name game -p 3000:3000 maryann123456789/candycrush:latest
+      - name: Configure AWS credentials        # ADD THIS
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
 
       - name: Update kubeconfig
         run: aws eks --region eu-north-1 update-kubeconfig --name EKS_CLOUD
@@ -69,6 +78,5 @@ jobs:
           channel: '#githubactions-eks'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
 
 
